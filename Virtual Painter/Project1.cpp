@@ -67,7 +67,7 @@ cv::Point getContours(cv::Mat imgDil) {
 
 
 
-void findColor(cv::Mat img) {
+std::vector<std::vector<int>> findColor(cv::Mat img) {
 	cv::Mat imgHSV;
 
 	cv::cvtColor(img, imgHSV, cv::COLOR_BGR2HSV);
@@ -83,11 +83,17 @@ void findColor(cv::Mat img) {
 			newPoints.push_back({ myPoint.x,myPoint.y,i });
 		}
 	}
-	
+	return newPoints;
 }
 
 
-void drawOnCanvas();
+void drawOnCanvas(std::vector<std::vector<int>> newPoints, std::vector<cv::Scalar> myColorValues) {
+
+	for (int i = 0; i < newPoints.size(); i++) {
+		cv::circle(img, (cv::Point(newPoints[i][0],newPoints[i][1])), 10, myColorValues[newPoints[i][2]],cv::FILLED);
+	}
+
+}
 
 
 void main() {
@@ -97,7 +103,8 @@ void main() {
 
 	while (true) {
 		cap.read(img);
-		findColor(img);
+		newPoints = findColor(img);
+		drawOnCanvas(newPoints,myColorValues);
 		cv::imshow("image", img);
 		cv::waitKey(1);
 	}
